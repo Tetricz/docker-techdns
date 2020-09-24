@@ -17,7 +17,7 @@ WORKDIR /etc/dns
 
 EXPOSE 53/udp 53/tcp 5380/tcp 67/udp
 
-HEALTHCHECK --interval=60s --timeout=15s --start-period=120s \
+HEALTHCHECK --interval=60s --timeout=15s --start-period=60s --retries=2 \
              CMD curl -LSs 'https://api.ipify.org'
 
 ENTRYPOINT [ "./start.sh" ]
