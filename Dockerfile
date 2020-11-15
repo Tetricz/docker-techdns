@@ -1,6 +1,7 @@
 FROM alpine:3.12
 
-LABEL maintainer="github.com/Tetricz"
+LABEL maintainer="github.com/Tetricz" \
+    technitium-dns-version="5.5"
 
 ENV RUNTIME="dotnet-runtime-3.1.8-linux-musl-x64.tar.gz" \
  RUNTIMELINK="https://download.visualstudio.microsoft.com/download/pr/cd533aaa-9707-4188-8381-96a37e1102b8/9df9516fd0ebb7e324c5779d035a59a3/dotnet-runtime-3.1.8-linux-musl-x64.tar.gz"
