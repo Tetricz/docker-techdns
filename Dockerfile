@@ -3,8 +3,8 @@ FROM alpine:3.12
 LABEL maintainer="github.com/Tetricz" \
     technitium-dns-version="5.5"
 
-ENV RUNTIME="dotnet-runtime-3.1.8-linux-musl-x64.tar.gz" \
- RUNTIMELINK="https://download.visualstudio.microsoft.com/download/pr/cd533aaa-9707-4188-8381-96a37e1102b8/9df9516fd0ebb7e324c5779d035a59a3/dotnet-runtime-3.1.8-linux-musl-x64.tar.gz"
+ENV RUNTIME="aspnetcore-runtime-5.0.1-linux-musl-x64.tar.gz" \
+ RUNTIMELINK="https://download.visualstudio.microsoft.com/download/pr/b87727dd-e0e2-4253-b6f8-ba541195465c/78362e21fbb5b7faf869004993eea290/aspnetcore-runtime-5.0.1-linux-musl-x64.tar.gz"
 ENV PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt"
 
 RUN apk --no-cache add libstdc++ libgcc libssl1.1 zlib libintl krb5-libs icu-libs curl && \
