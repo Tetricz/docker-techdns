@@ -17,5 +17,4 @@ WORKDIR /etc/dns
 
 EXPOSE 53/udp 53/tcp 5380/tcp 67/udp
 
-
 ENTRYPOINT [ "./start.sh" ]
