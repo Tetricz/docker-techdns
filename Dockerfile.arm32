@@ -1,13 +1,13 @@
-FROM alpine:3.12
+FROM debian:stable-slim
 
 LABEL maintainer="github.com/Tetricz" \
     technitium-dns-version="5.6"
 
-ENV RUNTIME="aspnetcore-runtime-5.0.2-linux-musl-x64.tar.gz" \
- RUNTIMELINK="https://download.visualstudio.microsoft.com/download/pr/63fe4210-67f0-4d01-99c8-284e26978498/464f60cca9e84fc28371828552455d06/aspnetcore-runtime-5.0.2-linux-musl-x64.tar.gz"
+ENV RUNTIME="aspnetcore-runtime-5.0.2-linux-arm.tar.gz" \
+ RUNTIMELINK="https://download.visualstudio.microsoft.com/download/pr/7aa18d1a-1c9a-4571-9668-3d76b5cda367/41a75d18282fa815c548be4dbc9dd55f/aspnetcore-runtime-5.0.2-linux-arm.tar.gz"
 ENV PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt"
 
-RUN apk --no-cache add libstdc++ libgcc libssl1.1 zlib libintl krb5-libs icu-libs curl && \
+RUN apt-get update && apt-get install -y wget libc6 libgcc1 libgssapi-krb5-2 libicu63 libssl1.1 libstdc++6 zlib1g && \
  wget -O /tmp/${RUNTIME} ${RUNTIMELINK} && \
  mkdir -p "/opt" && tar zxf /tmp/$RUNTIME -C "/opt" && \
  wget -O /tmp/DnsServerPortable.tar.gz https://download.technitium.com/dns/DnsServerPortable.tar.gz && \
