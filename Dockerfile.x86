@@ -1,16 +1,16 @@
-FROM alpine:3.12
+FROM alpine:3.13
 
 LABEL maintainer="github.com/Tetricz" \
     technitium-dns-version="5.6"
 
-ENV RUNTIME="aspnetcore-runtime-5.0.2-linux-musl-x64.tar.gz" \
- RUNTIMELINK="https://download.visualstudio.microsoft.com/download/pr/63fe4210-67f0-4d01-99c8-284e26978498/464f60cca9e84fc28371828552455d06/aspnetcore-runtime-5.0.2-linux-musl-x64.tar.gz"
+ENV RUNTIME="aspnetcore-runtime-5.0.3-linux-musl-x64.tar.gz" \
+ RUNTIMELINK="https://download.visualstudio.microsoft.com/download/pr/8af40459-43ae-465b-b40e-e2cf1f7f8832/8c083a48764ae6fa4de1a288b5e1f903/aspnetcore-runtime-5.0.3-linux-musl-x64.tar.gz"
 ENV PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt"
 
 RUN apk --no-cache add libstdc++ libgcc libssl1.1 zlib libintl krb5-libs icu-libs curl && \
- wget -O /tmp/${RUNTIME} ${RUNTIMELINK} && \
+ wget -O /tmp/${RUNTIME} ${RUNTIMELINK} && echo $(sha512sum /tmp/${RUNTIME}) && \
  mkdir -p "/opt" && tar zxf /tmp/$RUNTIME -C "/opt" && \
- wget -O /tmp/DnsServerPortable.tar.gz https://download.technitium.com/dns/DnsServerPortable.tar.gz && \
+ wget -O /tmp/DnsServerPortable.tar.gz https://download.technitium.com/dns/DnsServerPortable.tar.gz && echo $(sha256sum /tmp/DnsServerPortable.tar.gz) && \
  mkdir -p /etc/dns/ && tar -zxf /tmp/DnsServerPortable.tar.gz -C /etc/dns/ && rm -v /tmp/*
 
 WORKDIR /etc/dns

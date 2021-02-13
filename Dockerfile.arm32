@@ -3,14 +3,14 @@ FROM debian:stable-slim
 LABEL maintainer="github.com/Tetricz" \
     technitium-dns-version="5.6"
 
-ENV RUNTIME="aspnetcore-runtime-5.0.2-linux-arm.tar.gz" \
- RUNTIMELINK="https://download.visualstudio.microsoft.com/download/pr/7aa18d1a-1c9a-4571-9668-3d76b5cda367/41a75d18282fa815c548be4dbc9dd55f/aspnetcore-runtime-5.0.2-linux-arm.tar.gz"
+ENV RUNTIME="aspnetcore-runtime-5.0.3-linux-arm.tar.gz" \
+ RUNTIMELINK="https://download.visualstudio.microsoft.com/download/pr/6d8c577b-d6a2-4110-a105-58f578f136db/236c018b3ee005d47fdcb5e9960eaf1f/aspnetcore-runtime-5.0.3-linux-arm.tar.gz"
 ENV PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt"
 
 RUN apt-get update && apt-get install -y wget libc6 libgcc1 libgssapi-krb5-2 libicu63 libssl1.1 libstdc++6 zlib1g && \
- wget -O /tmp/${RUNTIME} ${RUNTIMELINK} && \
+ wget -O /tmp/${RUNTIME} ${RUNTIMELINK} && echo $(sha512sum /tmp/${RUNTIME}) && \
  mkdir -p "/opt" && tar zxf /tmp/$RUNTIME -C "/opt" && \
- wget -O /tmp/DnsServerPortable.tar.gz https://download.technitium.com/dns/DnsServerPortable.tar.gz && \
+ wget -O /tmp/DnsServerPortable.tar.gz https://download.technitium.com/dns/DnsServerPortable.tar.gz && echo $(sha256sum /tmp/DnsServerPortable.tar.gz) && \
  mkdir -p /etc/dns/ && tar -zxf /tmp/DnsServerPortable.tar.gz -C /etc/dns/ && rm -v /tmp/*
 
 WORKDIR /etc/dns
