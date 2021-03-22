@@ -1,7 +1,7 @@
 FROM debian:stable-slim
 
 LABEL maintainer="github.com/Tetricz" \
-    technitium-dns-version="5.6"
+    technitium-dns-version="6.0"
 
 ENV RUNTIME="aspnetcore-runtime-5.0.4-linux-arm.tar.gz" \
  RUNTIMELINK="https://download.visualstudio.microsoft.com/download/pr/dc029ada-7f37-45c0-9a0b-ed88c1d6ec1d/3364dac1192510a5968d7c8976a5d630/aspnetcore-runtime-5.0.4-linux-arm.tar.gz"

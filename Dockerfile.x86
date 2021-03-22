@@ -1,7 +1,7 @@
 FROM alpine:3.13
 
 LABEL maintainer="github.com/Tetricz" \
-    technitium-dns-version="5.6"
+    technitium-dns-version="6.0"
 
 ENV RUNTIME="aspnetcore-runtime-5.0.4-linux-musl-x64.tar.gz" \
  RUNTIMELINK="https://download.visualstudio.microsoft.com/download/pr/df48d136-7c22-4e76-867a-75513225d285/f4cc8ec0ef5d0d03b77f3ab325f75f25/aspnetcore-runtime-5.0.4-linux-musl-x64.tar.gz"
