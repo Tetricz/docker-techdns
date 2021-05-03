@@ -1,20 +1,33 @@
-FROM alpine:3.13
+# Maintainer https://github.com/Tetricz
+# https://hub.docker.com/_/microsoft-dotnet-sdk
+# https://hub.docker.com/_/microsoft-dotnet-runtime/
+ARG DOTNET_VERSION=5.0-alpine3.13-arm64v8
 
-LABEL maintainer="github.com/Tetricz" \
-    technitium-dns-version="6.2.3"
+FROM alpine:latest as downloader
+# https://github.com/TechnitiumSoftware/DnsServer
+ARG TECHDNS_VERSION=master
+RUN apk add --no-cache curl unzip \
+ && curl -L https://github.com/TechnitiumSoftware/TechnitiumLibrary/archive/refs/heads/master.zip -o techlibrary.zip \
+ && unzip *library.zip \
+ && curl -L https://github.com/TechnitiumSoftware/DnsServer/archive/refs/heads/${TECHDNS_VERSION}.zip -o techdns.zip \
+ && unzip *dns.zip
 
-ENV RUNTIME="aspnetcore-runtime-5.0.5-linux-musl-arm64.tar.gz" \
- RUNTIMELINK="https://download.visualstudio.microsoft.com/download/pr/967a8939-1be2-4f9d-94e6-2fb989fa8dc6/9ed94ed16f6b166beb79af1c625199d1/aspnetcore-runtime-5.0.5-linux-musl-arm64.tar.gz"
-ENV PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt"
+FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION} as builder
+COPY --from=downloader /TechnitiumLibrary-master /TechnitiumLibrary-master
+COPY --from=downloader DnsServer-* DnsServer-build
+ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
+RUN dotnet publish TechnitiumLibrary-master/TechnitiumLibrary.ByteTree --configuration Release --output="/TechnitiumLibrary/bin" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none" \
+ && dotnet publish TechnitiumLibrary-master/TechnitiumLibrary.Database --configuration Release --output="/TechnitiumLibrary/bin" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none" \
+ && dotnet publish TechnitiumLibrary-master/TechnitiumLibrary.IO --configuration Release --output="/TechnitiumLibrary/bin" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none" \
+ && dotnet publish TechnitiumLibrary-master/TechnitiumLibrary.Net --configuration Release --output="/TechnitiumLibrary/bin" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none" \
+ && dotnet publish TechnitiumLibrary-master/TechnitiumLibrary.Net.UPnP --configuration Release --output="/TechnitiumLibrary/bin" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none" \
+ && dotnet publish TechnitiumLibrary-master/TechnitiumLibrary.Security.Cryptography --configuration Release --output="/TechnitiumLibrary/bin" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none" \
+ && dotnet publish DnsServer-build/DnsServerApp --configuration Release --output="/dns" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none"
 
-RUN apk --no-cache add libstdc++ libgcc libssl1.1 zlib libintl krb5-libs icu-libs curl && \
- wget -O /tmp/${RUNTIME} ${RUNTIMELINK} && echo $(sha512sum /tmp/${RUNTIME}) && \
- mkdir -p "/opt" && tar zxf /tmp/$RUNTIME -C "/opt" && \
- wget -O /tmp/DnsServerPortable.tar.gz https://download.technitium.com/dns/DnsServerPortable.tar.gz && echo $(sha256sum /tmp/DnsServerPortable.tar.gz) && \
- mkdir -p /etc/dns/ && tar -zxf /tmp/DnsServerPortable.tar.gz -C /etc/dns/ && rm -v /tmp/*
+FROM mcr.microsoft.com/dotnet/runtime:${DOTNET_VERSION}
 
-WORKDIR /etc/dns
-
+COPY --from=builder /dns /dns
+WORKDIR /dns
 EXPOSE 53/udp 53/tcp 5380/tcp 67/udp
 
-ENTRYPOINT [ "./start.sh" ]
+ENTRYPOINT [ "dotnet", "DnsServerApp.dll" ]
