@@ -1,7 +1,8 @@
 # Maintainer https://github.com/Tetricz
 # https://hub.docker.com/_/microsoft-dotnet-sdk
 # https://hub.docker.com/_/microsoft-dotnet-runtime/
-ARG DOTNET_VERSION=5.0-alpine3.13-arm64v8
+ARG SDK_VERSION=5.0-buster-slim-arm64v8
+ARG RUNTIME_VERSION=5.0-alpine3.13-arm64v8
 
 FROM alpine:latest as downloader
 # https://github.com/TechnitiumSoftware/DnsServer
@@ -12,7 +13,7 @@ RUN apk add --no-cache curl unzip \
  && curl -L https://github.com/TechnitiumSoftware/DnsServer/archive/refs/heads/${TECHDNS_VERSION}.zip -o techdns.zip \
  && unzip *dns.zip
 
-FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION} as builder
+FROM mcr.microsoft.com/dotnet/sdk:${SDK_VERSION} as builder
 COPY --from=downloader /TechnitiumLibrary-master /TechnitiumLibrary-master
 COPY --from=downloader DnsServer-* DnsServer-build
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
@@ -24,7 +25,7 @@ RUN dotnet publish TechnitiumLibrary-master/TechnitiumLibrary.ByteTree --configu
  && dotnet publish TechnitiumLibrary-master/TechnitiumLibrary.Security.Cryptography --configuration Release --output="/TechnitiumLibrary/bin" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none" \
  && dotnet publish DnsServer-build/DnsServerApp --configuration Release --output="/dns" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none"
 
-FROM mcr.microsoft.com/dotnet/runtime:${DOTNET_VERSION}
+FROM mcr.microsoft.com/dotnet/runtime:${RUNTIME_VERSION}
 
 COPY --from=builder /dns /dns
 WORKDIR /dns
