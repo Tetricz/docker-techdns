@@ -1,8 +1,8 @@
 # Maintainer https://github.com/Tetricz
 # https://hub.docker.com/_/microsoft-dotnet-sdk
 # https://hub.docker.com/_/microsoft-dotnet-runtime/
-ARG SDK_VERSION=5.0-alpine3.13-amd64
-ARG RUNTIME_VERSION=5.0-alpine3.13-amd64
+ARG SDK_VERSION=5.0
+ARG RUNTIME_VERSION=5.0
 
 FROM alpine:latest as downloader
 # https://github.com/TechnitiumSoftware/DnsServer
@@ -17,13 +17,13 @@ FROM mcr.microsoft.com/dotnet/sdk:${SDK_VERSION} as builder
 COPY --from=downloader /TechnitiumLibrary-master /TechnitiumLibrary-master
 COPY --from=downloader DnsServer-* DnsServer-build
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
-RUN dotnet publish TechnitiumLibrary-master/TechnitiumLibrary.ByteTree --configuration Release --output="/TechnitiumLibrary/bin" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none" \
- && dotnet publish TechnitiumLibrary-master/TechnitiumLibrary.Database --configuration Release --output="/TechnitiumLibrary/bin" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none" \
- && dotnet publish TechnitiumLibrary-master/TechnitiumLibrary.IO --configuration Release --output="/TechnitiumLibrary/bin" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none" \
- && dotnet publish TechnitiumLibrary-master/TechnitiumLibrary.Net --configuration Release --output="/TechnitiumLibrary/bin" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none" \
- && dotnet publish TechnitiumLibrary-master/TechnitiumLibrary.Net.UPnP --configuration Release --output="/TechnitiumLibrary/bin" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none" \
- && dotnet publish TechnitiumLibrary-master/TechnitiumLibrary.Security.Cryptography --configuration Release --output="/TechnitiumLibrary/bin" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none" \
- && dotnet publish DnsServer-build/DnsServerApp --configuration Release --output="/dns" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none"
+RUN dotnet publish TechnitiumLibrary-master/TechnitiumLibrary.ByteTree --disable-parallel --configuration Release --output="/TechnitiumLibrary/bin" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none" \
+ && dotnet publish TechnitiumLibrary-master/TechnitiumLibrary.Database --disable-parallel --configuration Release --output="/TechnitiumLibrary/bin" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none" \
+ && dotnet publish TechnitiumLibrary-master/TechnitiumLibrary.IO --disable-parallel --configuration Release --output="/TechnitiumLibrary/bin" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none" \
+ && dotnet publish TechnitiumLibrary-master/TechnitiumLibrary.Net --disable-parallel --configuration Release --output="/TechnitiumLibrary/bin" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none" \
+ && dotnet publish TechnitiumLibrary-master/TechnitiumLibrary.Net.UPnP --disable-parallel --configuration Release --output="/TechnitiumLibrary/bin" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none" \
+ && dotnet publish TechnitiumLibrary-master/TechnitiumLibrary.Security.Cryptography --disable-parallel --configuration Release --output="/TechnitiumLibrary/bin" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none" \
+ && dotnet publish DnsServer-build/DnsServerApp --disable-parallel --configuration Release --output="/dns" --self-contained --runtime linux-x64 "-p:DebugSymbols=false;DebugType=none"
 
 FROM mcr.microsoft.com/dotnet/runtime:${RUNTIME_VERSION}
 
