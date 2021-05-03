@@ -4,7 +4,7 @@
 ARG SDK_VERSION=5.0-buster-slim-arm32v7
 ARG RUNTIME_VERSION=5.0-buster-slim-arm32v7
 
-FROM debian:slim as downloader
+FROM debian:stable-slim as downloader
 # https://github.com/TechnitiumSoftware/DnsServer
 ARG TECHDNS_VERSION=master
 RUN apt-get update && apt-get install curl unzip -y \
