@@ -11,10 +11,10 @@ docker run -dit -v <your/directory>:/dns/config --net=host --name techdns tetric
 I recommend running the network in host mode. Make sure you unbind or stop any programs using port 53 if you are to use network host.
 ## Building the image yourself
 ```
-docker build image --build-arg SDK_VERSION=5.0-alpine3.13-amd64 --build-arg RUNTIME_VERSION=5.0-alpine3.13-amd64 --build-arg RID=linux-musl-x64 -t techdns:amd64 --no-cache  .
+docker build --build-arg SDK_VERSION=5.0-alpine3.13-amd64 --build-arg RUNTIME_VERSION=5.0-alpine3.13-amd64 --build-arg RID=linux-musl-x64 -t techdns:amd64 .
 ```
 Using Buildx for multiple platforms
 ```
-docker buildx build --build-arg SDK_VERSION=5.0 --build-arg RUNTIME_VERSION=5.0-alpine3.13-arm64v8 --build-arg RID=linux-musl-x64 --platform linux/arm64 -f "Dockerfile" -t tetricz/techdns:arm64 --no-cache --push .
-docker buildx build --build-arg SDK_VERSION=5.0-buster-slim-amd64 --build-arg RUNTIME_VERSION=5.0-buster-slim-arm32v7 --build-arg RID=linux-arm --platform linux/arm/v7 -f "Dockerfile" -t tetricz/techdns:armv7 --no-cache --push .
+docker buildx build --build-arg SDK_VERSION=5.0 --build-arg RUNTIME_VERSION=5.0-alpine3.13-arm64v8 --build-arg RID=linux-musl-x64 --platform linux/arm64 -f "Dockerfile" -t techdns:arm64 --no-cache .
+docker buildx build --build-arg SDK_VERSION=5.0-buster-slim-amd64 --build-arg RUNTIME_VERSION=5.0-buster-slim-arm32v7 --build-arg RID=linux-arm --platform linux/arm/v7 -f "Dockerfile" -t techdns:armv7 --no-cache .
 ```
